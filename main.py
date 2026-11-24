@@ -11,6 +11,10 @@ import sys
 
 LINE = "Shipped 41 tasks this week, 0 of them the one you asked for. Still blocked on your reply from Tuesday. Morale: excellent."
 
+# The brief caps the line at 200 characters; the program refuses to ship
+# a line that breaks the cap, so a future edit cannot silently break it.
+MAX_CHARS = 200
+
 
 def output_path():
     if len(sys.argv) > 1:
@@ -25,6 +29,11 @@ def output_path():
 
 
 def main():
+    if len(LINE) > MAX_CHARS:
+        raise ValueError(
+            "status line is %d characters, over the %d limit"
+            % (len(LINE), MAX_CHARS)
+        )
     path = output_path()
     parent = os.path.dirname(path)
     if parent:
